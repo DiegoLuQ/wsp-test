@@ -5,8 +5,8 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Copia los archivos de la aplicación y los requisitos al contenedor
-COPY .main.py /app
-COPY requirements.txt /app
+COPY ./app/main.py /app
+COPY ./app/requirements.txt /app
 
 # Instala las dependencias de Python
 RUN pip install --no-cache-dir --upgrade -r requirements.txt

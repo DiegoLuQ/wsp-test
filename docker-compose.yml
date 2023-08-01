@@ -16,8 +16,8 @@ services:
 
   nginx_pme:
     image: nginx:latest
-    ports:
-      - "90:80"
+    # ports:
+    #   - "90:80"
     environment:
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=wsp.diego-luque.com

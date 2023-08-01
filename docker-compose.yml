@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  web_wsp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # ports:
+    #   - "5000:5000"
+    expose:
+      - 90
+    volumes:
+      - ./main.py:/app/main.py
+      - ./requirements.txt:/app/requirements.txt
+    command: python main.py
+
+  nginx_pme:
+    image: nginx:latest
+    ports:
+      - "90:80"
+    environment:
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=wsp.diego-luque.com
+      - LETSENCRYPT_HOST=wsp.diego-luque.com
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+networks:
+  default:
+    name: web_private_red_webapps
+    external: true

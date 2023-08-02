@@ -10,6 +10,8 @@ services:
       - 93
     volumes:
       - ./app:/app/
+    environment:
+      - SERVER_HOST=dbs_mariadb_2_2023
 
   nginx_wsp:
     image: nginx:latest
@@ -26,5 +28,5 @@ services:
 
 networks:
   default:
-    name: web_private_red_webapps
+    name: dbs_red_db #web_private_red_webapps #dbs_red_db
     external: true

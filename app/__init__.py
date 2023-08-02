@@ -1,11 +1,44 @@
 from flask import Flask, jsonify, request
+from pathlib import Path
+from dotenv import load_dotenv
+import mysql.connector
+import os
 
 app = Flask(__name__)
 
+url_path = Path('.') / '.env'
+load_dotenv(dotenv_path=url_path)
+class Settings:
+    SERVER_HOST = os.environ.get('SERVER_HOST')
+
+settings = Settings()
+
+db_config = {
+    'host': settings.SERVER_HOST,
+    'user': 'root',
+    'password': '2024octubre',
+    'database': 'chat'
+}
+
+def test_db_connection():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        conn.close()
+        return True
+    except mysql.connector.Error as e:
+        print(f"Error: {e}")
+        return False
+
+@app.route('/test-db-connection')
+def test_connection_endpoint():
+    if test_db_connection():
+        return jsonify({"message": "La conexión a la base de datos es exitosa.", "path":settings.SERVER_HOST})
+    else:
+        return jsonify({"message": "Error en la conexión a la base de datos.", "path":settings.SERVER_HOST})
+
 @app.route('/')
 def hello_world():
-    return '¡Hola, mundo! Este es mi primer endpoint en Flask 2022.'
-
+    return '¡Hola, mundo! Este es mi primer endpoint en Flask 2023.'
 
 #CUANDO RECIBAMOS LAS PETICIONES EN ESTA RUTA
 @app.route("/webhook/", methods=["POST", "GET"])
@@ -36,16 +69,33 @@ def webhook_whatsapp():
       bot = RiveScript()
       bot.load_file('restaurante.rive')
       bot.sort_replies()
+
       #Obtener respuesta
-      respuesta = bot.reply('localuser', mensaje)
+      respuesta = bot.reply('localuser', mensaje) # parte importante para 
       respuesta=respuesta.replace("\\n", "\\\n")
       respuesta=respuesta.replace("\\", "")
       
-      f = open("texto.txt", "w")
-      f.write(respuesta)
-      f.close()
-      #RETORNAMOS EL STATUS EN UN JSON
-      return jsonify({"status": "success"}, 200)
+    #CONECTAMOS A LA BASE DE DATOS
+      import mysql.connector
+      mydb = mysql.connector.connect(
+          host = settings.SERVER_HOST,
+          user = "root",
+          password = "2024octubre",
+          database='chat'
+      )
+      mycursor = mydb.cursor()
+      query="SELECT count(id) AS cantidad FROM registro WHERE id_wa='" + idWA + "';"
+      mycursor.execute("SELECT count(id) AS cantidad FROM registro WHERE id_wa='" + idWA + "';")
+
+      cantidad, = mycursor.fetchone()
+      cantidad=str(cantidad)
+      cantidad=int(cantidad)
+      if cantidad==0 :
+        sql = ("INSERT INTO registro"+ 
+        "(mensaje_recibido,mensaje_enviado,id_wa      ,timestamp_wa   ,telefono_wa) VALUES "+
+        "('"+mensaje+"'   ,'"+respuesta+"','"+idWA+"' ,'"+timestamp+"','"+telefonoCliente+"');")
+        mycursor.execute(sql)
+        mydb.commit()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=93)

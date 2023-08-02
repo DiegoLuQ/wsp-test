@@ -1,6 +1,12 @@
-#ChatBot inteligente con WhatsApp en Python
 from flask import Flask, jsonify, request
+
 app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return '¡Hola, mundo! Este es mi primer endpoint en Flask.'
+
+
 #CUANDO RECIBAMOS LAS PETICIONES EN ESTA RUTA
 @app.route("/webhook/", methods=["POST", "GET"])
 def webhook_whatsapp():
@@ -32,6 +38,5 @@ def webhook_whatsapp():
       #RETORNAMOS EL STATUS EN UN JSON
       return jsonify({"status": "success"}, 200)
 
-#INICIAMSO FLASK
-if __name__ == "__main__":
-  app.run(debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=93)

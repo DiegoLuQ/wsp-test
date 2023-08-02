@@ -5,14 +5,12 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Copia los archivos de la aplicación y los requisitos al contenedor
-COPY ./app/main.py /app
-COPY ./app/requirements.txt /app
+COPY ./app/requirements.txt ./app/requirements.txt
 
+COPY ./app/main.py /app/
 # Instala las dependencias de Python
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install -r ./app/requirements.txt
 
+EXPOSE 93
 # Expone el puerto 5000 para que Flask pueda recibir solicitudes
-# EXPOSE 5000
-
-# Comando para ejecutar la aplicación Flask
 CMD ["python", "main.py"]

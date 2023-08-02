@@ -42,7 +42,7 @@ def webhook_whatsapp():
       respuesta=respuesta.replace("\\", "")
       
       f = open("texto.txt", "w")
-      f.write(mensaje)
+      f.write(respuesta)
       f.close()
       #RETORNAMOS EL STATUS EN UN JSON
       return jsonify({"status": "success"}, 200)

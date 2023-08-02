@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return '¡Hola, mundo! Este es mi primer endpoint en Flask.'
+    return '¡Hola, mundo! Este es mi primer endpoint en Flask 2022.'
 
 
 #CUANDO RECIBAMOS LAS PETICIONES EN ESTA RUTA
@@ -39,4 +39,4 @@ def webhook_whatsapp():
       return jsonify({"status": "success"}, 200)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=93)
+    app.run(host='0.0.0.0', debug=True, port=93)

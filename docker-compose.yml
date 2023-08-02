@@ -8,6 +8,8 @@ services:
     command: python __init__.py
     expose:
       - 93
+    volumes:
+      - ./app:/app/
 
   nginx_wsp:
     image: nginx:latest
